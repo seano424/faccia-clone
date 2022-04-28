@@ -1,21 +1,45 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { links } from 'lib/links'
+import Hamburger from './Hamburger'
 
 export default function Header() {
   const [open, setOpen] = useState(false)
-  const links = [
-    { name: 'Products', href: '/' },
-    { name: 'Stockists', href: '/' },
-    { name: 'Press', href: '/' },
-    { name: 'Recipes', href: '/' },
-    { name: 'Our Story', href: '/' },
-    { name: 'Merch', href: '/' },
-  ]
+  const [prevScrollPos, setPrevScrollPos] = useState(0)
+  const [isNavVisible, setIsNavVisible] = useState(true)
+  const [isBigLogoVisible, setIsBigLogoVisible] = useState(true)
+
+  const handleScroll = () => {
+    const currentScrollPos = window.pageYOffset
+    setIsBigLogoVisible(currentScrollPos < 40)
+    setIsNavVisible(
+      (prevScrollPos > currentScrollPos &&
+        prevScrollPos - currentScrollPos > 70) ||
+        currentScrollPos < 10 ||
+        prevScrollPos > currentScrollPos
+    )
+    console.log('current: ', currentScrollPos, 'prev: ', prevScrollPos)
+    setPrevScrollPos(currentScrollPos)
+  }
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll)
+
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [prevScrollPos, isNavVisible, handleScroll])
 
   return (
-    <nav className="sticky top-0 flex justify-between items-center gap-6 pl-6 py-5 lg:px-16 lg:py-7 w-full shadow-sm filter backdrop-blur-lg z-50 bg-[#FDFBF4]">
+    <nav
+      className={`top-0 flex justify-between items-center gap-6 pl-6 py-5 lg:px-16 lg:py-7 w-full shadow-sm filter backdrop-blur-lg z-50 bg-[#FDFBF4] transition-opacity duration-300 ${
+        isNavVisible ? 'sticky opacity-100' : 'opacity-0'
+      }`}
+    >
       {/* First 3 Nav Items */}
-      <div className="hidden lg:flex gap-40">
+      <div
+        className={`hidden lg:flex gap-20 2xl:gap-40 tranform transition-transform duration-500 ${
+          isNavVisible ? 'translate-y-0' : '-translate-y-80'
+        }`}
+      >
         {links.slice(0, 3).map((item) => (
           <Link key={item.name} href={item.href}>
             <a className="uppercase tracking-widest text-sm">{item.name}</a>
@@ -23,40 +47,34 @@ export default function Header() {
         ))}
       </div>
 
-      <button
-        className="lg:hidden p-0 inline-block w-8 h-6 overflow-hidden min-w-max"
-        onClick={() => setOpen(!open)}
-        type="button"
-      >
-        <span className="flex flex-col items-center justify-center  gap-2">
-          <span
-            className={`relative origin-top-left h-[1px] w-8 bg-black transition duration-200 ease-in transform ${
-              open ? 'rotate-45 translate-x-1 -translate-y-1' : ''
-            }`}
-          ></span>
-          <span
-            className={`relative  h-[1px] w-8 bg-black transition duration-100 ease-in ${
-              open ? 'opacity-0' : 'opacity-100'
-            }`}
-          ></span>
-          <span
-            className={`relative origin-bottom-left h-[1px] w-8 bg-black transition duration-200 ease-in transform ${
-              open ? '-rotate-45 translate-x-1' : ''
-            }`}
-          ></span>
-        </span>
-      </button>
+      <Hamburger open={open} setOpen={setOpen} />
+
       {/* Logo */}
-      <div className="relative lg:top-0 lg:w-full h-full flex justify-center">
+      <div
+        className={`relative lg:top-0 lg:w-full h-full flex justify-center tranform transition-transform duration-500 ${
+          isNavVisible ? 'translate-y-0' : '-translate-y-80'
+        }`}
+      >
         <Link href="/">
-          <a className="uppercase logo font-black flex flex-col lg:absolute lg:-top-3 lg:w-full text-2xl lg:text-7xl lg:px-3 text-center min-w-max">
+          <a
+            className={`uppercase logo font-black flex flex-col lg:w-full text-2xl lg:px-3 text-center min-w-max ${
+              isBigLogoVisible
+                ? 'lg:text-7xl lg:min-w-min lg:-top-3 lg:absolute'
+                : 'lg:text-2xl'
+            }`}
+          >
             Faccia Brutto
           </a>
         </Link>
       </div>
       <div className="lg:hidden"></div>
+      
       {/* Last 3 Nav Items */}
-      <div className="hidden lg:flex items-center gap-40">
+      <div
+        className={`hidden lg:flex items-center gap-20 2xl:gap-40 tranform transition-transform duration-500 ${
+          isNavVisible ? 'translate-y-0' : '-translate-y-80'
+        }`}
+      >
         {links.slice(3, 6).map((item) => (
           <Link key={item.name} href={item.href}>
             <a className="uppercase min-w-max tracking-widest text-sm">

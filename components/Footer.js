@@ -3,17 +3,17 @@ export default function Footer() {
     <footer className="bg-[#608168] py-8 px-12 lg:px-16 grid grid-cols-1 gap-8 lg:flex justify-between items-baseline">
       <div className="grid gap-3 w-full lg:w-auto">
         <p className="font-bold logo capitalize tracking-wider text-xl">Keep In Touch:</p>
-        <form class="flex md:w-56 justify-between border-b border-black">
-          <label class="w-full" for="email">
+        <form className="flex md:w-56 justify-between border-b border-black">
+          <label className="w-full" htmlFor="email">
             <input
-              class="w-full p-0 uppercase bg-transparent placeholder:text-black border-none focus:ring-0"
+              className="w-full p-0 uppercase bg-transparent placeholder:text-black border-none focus:ring-0"
               required=""
               type="email"
               name="email"
               placeholder="Email"
             />
           </label>
-          <button type="submit" class="cursor-pointer ml-12 p-0">
+          <button type="submit" className="cursor-pointer ml-12 p-0">
             Submit
           </button>
         </form>
