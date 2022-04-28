@@ -1,0 +1,88 @@
+@import './components.css';
+@import './base.css';
+@import './utilities.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Career';
+  src: url('/fonts/Career.ttf');
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'CabinetGrotesk';
+  src: url('/fonts/CabinetGrotesk-Variable.ttf');
+  font-style: extralight;
+  font-weight: 100;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'CabinetGrotesk';
+  src: url('/fonts/CabinetGrotesk-Variable.ttf');
+  font-style: light;
+  font-weight: 200;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'CabinetGrotesk';
+  src: url('/fonts/CabinetGrotesk-Variable.ttf');
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'CabinetGrotesk';
+  src: url('/fonts/CabinetGrotesk-Variable.ttf');
+  font-style: medium;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'CabinetGrotesk';
+  src: url('/fonts/CabinetGrotesk-Variable.ttf');
+  font-style: semibold;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'CabinetGrotesk';
+  src: url('/fonts/CabinetGrotesk-Variable.ttf');
+  font-style: bold;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'CabinetGrotesk';
+  src: url('/fonts/CabinetGrotesk-Variable.ttf');
+  font-style: extrabold;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'CabinetGrotesk';
+  src: url('/fonts/CabinetGrotesk-Variable.ttf');
+  font-style: black;
+  font-weight: 900;
+  font-display: swap;
+}
+
+@layer base {
+  html,
+  body {
+    @apply p-0 m-0;
+    font-family: 'CabinetGrotesk';
+  }
+  a {
+    @apply no-underline text-inherit;
+  }
+  * {
+    @apply box-border;
+  }
+}

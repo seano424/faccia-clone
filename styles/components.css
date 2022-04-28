@@ -1,0 +1,13 @@
+@layer components {
+  .logo {
+    font-family: 'Career';
+  }
+
+  .card {
+    @apply shadow-lg rounded-md p-5 tracking-widest leading-loose;
+  }
+
+  .cta-button {
+    @apply uppercase text-xs lg:text-base underline underline-offset-2;
+  }
+}

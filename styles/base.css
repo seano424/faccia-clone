@@ -1,0 +1,10 @@
+@layer base {
+  h1 {
+    font-family: 'CabinetGrotesk';
+  }
+
+  footer {
+    @apply flex w-full shadow-teal-500 shadow-sm p-5 justify-center gap-6 uppercase font-extralight tracking-tighter;
+    font-family: 'CabinetGrotesk';
+  }
+}
