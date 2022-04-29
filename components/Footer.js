@@ -18,7 +18,7 @@ export default function Footer() {
           </button>
         </form>
       </div>
-      <div className="logo tracking-tighter uppercase font-black text-6xl lg:text-7xl text-center md:text-left">
+      <div className="logo text-6xl">
         <h2>Faccia</h2>
         <h2>Brutto</h2>
       </div>

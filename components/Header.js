@@ -1,87 +1,160 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { links } from 'lib/links'
+import Image from 'next/image'
+import useOutsideMouseOver from 'hooks/useOutsideMouseOver'
+import useMouseOver from 'hooks/useMouseOver'
 import Hamburger from './Hamburger'
 
-export default function Header() {
-  const [open, setOpen] = useState(false)
-  const [prevScrollPos, setPrevScrollPos] = useState(0)
-  const [isNavVisible, setIsNavVisible] = useState(true)
-  const [isBigLogoVisible, setIsBigLogoVisible] = useState(true)
+export default function Header(props) {
+  const { products, links, page } = props
+  const headerRef = useRef()
+  const [state, setState] = useState({
+    isHamburgerOpen: false,
+    prevScrollPos: 0,
+    isNavVisible: true,
+    isLogoBig: true,
+    showProducts: false,
+  })
+
+  const homePage = page === 'home'
 
   const handleScroll = () => {
     const currentScrollPos = window.pageYOffset
-    setIsBigLogoVisible(currentScrollPos < 40)
-    setIsNavVisible(
-      (prevScrollPos > currentScrollPos &&
-        prevScrollPos - currentScrollPos > 70) ||
-        currentScrollPos < 10 ||
-        prevScrollPos > currentScrollPos
-    )
-    console.log('current: ', currentScrollPos, 'prev: ', prevScrollPos)
-    setPrevScrollPos(currentScrollPos)
+    const isNavVisibleTernary =
+      (state.prevScrollPos > currentScrollPos &&
+        state.prevScrollPos - currentScrollPos > 70) ||
+      currentScrollPos < 10 ||
+      state.prevScrollPos > currentScrollPos
+
+    setState((prevState) => ({
+      ...prevState,
+      isLogoBig: currentScrollPos < 40,
+      isNavVisible: isNavVisibleTernary,
+      prevScrollPos: currentScrollPos,
+    }))
   }
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll)
 
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [prevScrollPos, isNavVisible, handleScroll])
+  }, [state])
+
+  useOutsideMouseOver(headerRef, () => {
+    setState((prevState) => ({
+      ...prevState,
+      showProducts: false,
+    }))
+  })
+
+  useMouseOver(headerRef, () => {
+    console.log('hello from the header');
+  })
+
+  function handleShowProducts() {
+    setState((prevState) => ({
+      ...prevState,
+      showProducts: true,
+    }))
+  }
 
   return (
-    <nav
-      className={`top-0 flex justify-between items-center gap-6 pl-6 py-5 lg:px-16 lg:py-7 w-full shadow-sm filter backdrop-blur-lg z-50 bg-[#FDFBF4] transition-opacity duration-300 ${
-        isNavVisible ? 'sticky opacity-100' : 'opacity-0'
-      }`}
-    >
-      {/* First 3 Nav Items */}
+    <nav ref={headerRef} className="w-full fixed z-50">
       <div
-        className={`hidden lg:flex gap-20 2xl:gap-40 tranform transition-transform duration-500 ${
-          isNavVisible ? 'translate-y-0' : '-translate-y-80'
-        }`}
+        className={`p-6 lg:px-16 transform transition-transform duration-500 ${
+          state.isNavVisible ? 'translate-y-0' : '-translate-y-[8rem]'
+        } ${
+          homePage && !state.showProducts ? 'bg-[#FDFBF4]' : 'bg-transparent'
+        } ${state.showProducts && 'bg-[#FDFBF4]'}`}
       >
-        {links.slice(0, 3).map((item) => (
-          <Link key={item.name} href={item.href}>
-            <a className="uppercase tracking-widest text-sm">{item.name}</a>
-          </Link>
-        ))}
-      </div>
-
-      <Hamburger open={open} setOpen={setOpen} />
-
-      {/* Logo */}
-      <div
-        className={`relative lg:top-0 lg:w-full h-full flex justify-center tranform transition-transform duration-500 ${
-          isNavVisible ? 'translate-y-0' : '-translate-y-80'
-        }`}
-      >
-        <Link href="/">
-          <a
-            className={`uppercase logo font-black flex flex-col lg:w-full text-2xl lg:px-3 text-center min-w-max ${
-              isBigLogoVisible
-                ? 'lg:text-7xl lg:min-w-min lg:-top-3 lg:absolute'
-                : 'lg:text-2xl'
+        <ul className="flex justify-between items-center gap-6">
+          {/* Links 1-3 */}
+          <div
+            className={`hidden lg:flex gap-20 2xl:gap-40 tranform transition-transform duration-500 ${
+              state.isNavVisible ? 'translate-y-0' : '-translate-y-80'
             }`}
           >
-            Faccia Brutto
-          </a>
-        </Link>
-      </div>
-      <div className="lg:hidden"></div>
-      
-      {/* Last 3 Nav Items */}
-      <div
-        className={`hidden lg:flex items-center gap-20 2xl:gap-40 tranform transition-transform duration-500 ${
-          isNavVisible ? 'translate-y-0' : '-translate-y-80'
-        }`}
-      >
-        {links.slice(3, 6).map((item) => (
-          <Link key={item.name} href={item.href}>
-            <a className="uppercase min-w-max tracking-widest text-sm">
-              {item.name}
-            </a>
-          </Link>
-        ))}
+            {links.slice(0, 3).map((item) => (
+              <Link key={item.name} href={item.href}>
+                <a
+                  onMouseEnter={
+                    item.name.toLowerCase() === 'products'
+                      ? handleShowProducts
+                      : null
+                  }
+                  className="uppercase hover:underline underline-offset-4 tracking-widest text-sm"
+                >
+                  {item.name}
+                </a>
+              </Link>
+            ))}
+          </div>
+
+          <Hamburger state={state} setState={setState} />
+
+          {/* Logo */}
+          <div
+            className={`relative z-10 lg:top-0 lg:w-full h-full flex justify-center tranform transition-transform duration-500 ${
+              state.isNavVisible ? 'translate-y-0' : '-translate-y-80'
+            }`}
+          >
+            <Link href="/">
+              <a
+                className={`logo ${
+                  state.isLogoBig
+                    ? 'lg:text-7xl lg:min-w-min lg:-top-3 lg:absolute'
+                    : 'lg:text-2xl'
+                }`}
+              >
+                Faccia Brutto
+              </a>
+            </Link>
+          </div>
+          <div className="lg:hidden"></div>
+
+          {/* Links 4-6 */}
+          <div
+            className={`hidden lg:flex items-center gap-20 2xl:gap-40 tranform transition-transform duration-500 ${
+              state.isNavVisible ? 'translate-y-0' : '-translate-y-80'
+            }`}
+          >
+            {links.slice(3, 6).map((item) => (
+              <Link key={item.name} href={item.href}>
+                <a className="uppercase min-w-max hover:underline underline-offset-4 tracking-widest text-sm">
+                  {item.name}
+                </a>
+              </Link>
+            ))}
+          </div>
+        </ul>
+
+        <ul
+          className={`pt-10 pb-5 grid grid-cols-5 tranform duration-500 ${
+            state.showProducts ? 'translate-y-0' : '-translate-y-full hidden'
+          } ${state.isNavVisible ? '' : 'translate-y-20 pb-20'}`}
+        >
+          {products.map((product) => (
+            <Link
+              key={product.title}
+              onClick={() =>
+                setState((prevState) => ({ ...prevState, showProducts: false }))
+              }
+              href={`/products/${product.title
+                .replace(/\s+/g, '-')
+                .toLowerCase()}`}
+            >
+              <a>
+                <Image
+                  src={product.image}
+                  alt={product.title}
+                  height={400}
+                  width={300}
+                />
+                <p className="tracking-wider text-xl">{product.title}</p>
+              </a>
+            </Link>
+          ))}
+        </ul>
       </div>
     </nav>
   )

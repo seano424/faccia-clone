@@ -1,5 +1,6 @@
 @layer components {
   .logo {
+    @apply uppercase tracking-tighter text-2xl text-center  font-black lg:text-7xl;
     font-family: 'Career';
   }
 
