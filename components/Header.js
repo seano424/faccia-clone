@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useContext } from 'react'
+import { CursorContext } from '@/context/CursorContext'
 import Link from 'next/link'
 import Image from 'next/image'
 import useOutsideMouseOver from 'hooks/useOutsideMouseOver'
@@ -7,6 +8,7 @@ import Hamburger from './Hamburger'
 
 export default function Header(props) {
   const { products, links, page } = props
+  const { cursor, setCursor } = useContext(CursorContext)
   const headerRef = useRef()
   const [state, setState] = useState({
     isHamburgerOpen: false,
@@ -48,7 +50,10 @@ export default function Header(props) {
   })
 
   useMouseOver(headerRef, () => {
-    console.log('hello from the header');
+    setCursor(prevState => ({
+      ...prevState,
+      showCustomCursor: false
+    }))
   })
 
   function handleShowProducts() {

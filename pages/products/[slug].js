@@ -1,19 +1,22 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useContext } from 'react'
+import { CursorContext } from '../../context/CursorContext'
 import Layout from '@/components/Layout'
 import Image from 'next/image'
 import useOutsideMouseOver from 'hooks/useOutsideMouseOver'
 
 export default function Product(props) {
+  const { cursor, setCursor } = useContext(CursorContext)
   const { product } = props
   const { images } = product
   const imageRef = useRef()
   const contentRef = useRef()
 
+  console.log(cursor);
+
   const [state, setState] = useState({
     mainImage: 0,
     x: -100,
     y: 100,
-    showCustomCursor: true,
   })
 
   useEffect(() => {
@@ -38,14 +41,14 @@ export default function Product(props) {
   }
 
   useOutsideMouseOver(imageRef, () => {
-    setState((prevState) => ({
+    setCursor((prevState) => ({
       ...prevState,
       showCustomCursor: false,
     }))
   })
 
   useOutsideMouseOver(contentRef, () => {
-    setState((prevState) => ({
+    setCursor((prevState) => ({
       ...prevState,
       showCustomCursor: true,
     }))
@@ -55,7 +58,7 @@ export default function Product(props) {
     <Layout {...props} page="products">
       <div
         className={`absolute cursor-none z-20 left-0 top-0 text-5xl pointer-events-none transition-opacity duration-150 ${
-          state.showCustomCursor ? 'opacity-100' : 'opacity-0'
+          cursor.showCustomCursor ? 'opacity-100' : 'opacity-0'
         }`}
         style={{
           transform: `translate3d(${state.x}px, ${state.y}px, 0)`,
@@ -67,7 +70,7 @@ export default function Product(props) {
       </div>
       <section
         className={`grid grid-cols-2 ${
-          state.showCustomCursor && 'cursor-none'
+          cursor.showCustomCursor && 'cursor-none'
         }`}
       >
         <div
